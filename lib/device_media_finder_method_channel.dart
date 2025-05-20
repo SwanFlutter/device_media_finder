@@ -1,8 +1,9 @@
+import 'package:device_media_finder/src/models/audio_file.dart';
+import 'package:device_media_finder/src/models/videofile.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 import 'device_media_finder_platform_interface.dart';
-import 'models/media_file.dart';
 
 /// An implementation of [DeviceMediaFinderPlatform] that uses method channels.
 class MethodChannelDeviceMediaFinder extends DeviceMediaFinderPlatform {
@@ -59,5 +60,24 @@ class MethodChannelDeviceMediaFinder extends DeviceMediaFinderPlatform {
       {'videoId': videoId, 'width': width, 'height': height},
     );
     return result;
+  }
+
+  @override
+  Future<Map<String, int>> getVideoFolders() async {
+    // Get all videos first
+    final videos = await getVideos();
+
+    // Group videos by folder path
+    final Map<String, int> folderCounts = {};
+
+    for (final video in videos) {
+      if (folderCounts.containsKey(video.folderPath)) {
+        folderCounts[video.folderPath] = folderCounts[video.folderPath]! + 1;
+      } else {
+        folderCounts[video.folderPath] = 1;
+      }
+    }
+
+    return folderCounts;
   }
 }

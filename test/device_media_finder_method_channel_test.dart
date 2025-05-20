@@ -20,6 +20,8 @@ void main() {
               return [];
             case 'getVideoThumbnail':
               return Uint8List(0);
+            case 'getVideoFolders':
+              return <String, int>{'test/folder': 5};
             default:
               return null;
           }
@@ -46,5 +48,10 @@ void main() {
   test('getVideoThumbnail', () async {
     final result = await platform.getVideoThumbnail('test');
     expect(result != null, true);
+  });
+
+  test('getVideoFolders', () async {
+    final result = await platform.getVideoFolders();
+    expect(result, isA<Map<String, int>>());
   });
 }

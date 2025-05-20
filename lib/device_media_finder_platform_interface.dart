@@ -1,9 +1,10 @@
 import 'dart:typed_data';
 
+import 'package:device_media_finder/src/models/audio_file.dart';
+import 'package:device_media_finder/src/models/videofile.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import 'device_media_finder_method_channel.dart';
-import 'models/media_file.dart';
 
 abstract class DeviceMediaFinderPlatform extends PlatformInterface {
   /// Constructs a DeviceMediaFinderPlatform.
@@ -55,5 +56,12 @@ abstract class DeviceMediaFinderPlatform extends PlatformInterface {
     int height = 128,
   }) {
     throw UnimplementedError('getVideoThumbnail() has not been implemented.');
+  }
+
+  /// Get a list of folders containing videos
+  ///
+  /// Returns a map where the keys are folder paths and the values are the number of videos in each folder
+  Future<Map<String, int>> getVideoFolders() {
+    throw UnimplementedError('getVideoFolders() has not been implemented.');
   }
 }

@@ -1,7 +1,10 @@
+import 'package:device_media_finder/device_media_finder.dart';
 import 'package:flutter/foundation.dart';
 
 import 'device_media_finder_platform_interface.dart';
-import 'models/media_file.dart';
+
+export 'package:device_media_finder/src/models/audio_file.dart';
+export 'package:device_media_finder/src/models/videofile.dart';
 
 /// Main plugin class for accessing media files (videos and audio) on the device
 /// with support for various formats and thumbnails.
@@ -615,5 +618,254 @@ class DeviceMediaFinder {
     }
 
     return videos;
+  }
+
+  /// Get a list of folders containing videos
+  ///
+  /// Returns a map where the keys are folder paths and the values are the number of videos in each folder.
+  /// This is useful for categorizing videos by folder.
+  ///
+  /// Example 1: Get all video folders and display them in a list
+  /// ```dart
+  /// final deviceMediaFinder = DeviceMediaFinder();
+  /// final videoFolders = await deviceMediaFinder.getVideoFolders();
+  ///
+  /// print('Found ${videoFolders.length} folders with videos');
+  ///
+  /// // Sort folders by number of videos (descending)
+  /// final sortedFolders = videoFolders.entries.toList()
+  ///   ..sort((a, b) => b.value.compareTo(a.value));
+  ///
+  /// for (final entry in sortedFolders) {
+  ///   print('${entry.key}: ${entry.value} videos');
+  /// }
+  /// ```
+  ///
+  /// Example 2: Create a folder browser UI
+  /// ```dart
+  /// class VideoFolderBrowser extends StatefulWidget {
+  ///   @override
+  ///   _VideoFolderBrowserState createState() => _VideoFolderBrowserState();
+  /// }
+  ///
+  /// class _VideoFolderBrowserState extends State<VideoFolderBrowser> {
+  ///   final deviceMediaFinder = DeviceMediaFinder();
+  ///   Map<String, int> videoFolders = {};
+  ///   bool isLoading = true;
+  ///
+  ///   @override
+  ///   void initState() {
+  ///     super.initState();
+  ///     _loadFolders();
+  ///   }
+  ///
+  ///   Future<void> _loadFolders() async {
+  ///     setState(() {
+  ///       isLoading = true;
+  ///     });
+  ///
+  ///     try {
+  ///       final folders = await deviceMediaFinder.getVideoFolders();
+  ///       setState(() {
+  ///         videoFolders = folders;
+  ///         isLoading = false;
+  ///       });
+  ///     } catch (e) {
+  ///       print('Error loading folders: $e');
+  ///       setState(() {
+  ///         isLoading = false;
+  ///       });
+  ///     }
+  ///   }
+  ///
+  ///   @override
+  ///   Widget build(BuildContext context) {
+  ///     if (isLoading) {
+  ///       return Center(child: CircularProgressIndicator());
+  ///     }
+  ///
+  ///     if (videoFolders.isEmpty) {
+  ///       return Center(child: Text('No video folders found'));
+  ///     }
+  ///
+  ///     // Sort folders by video count (descending)
+  ///     final sortedFolders = videoFolders.entries.toList()
+  ///       ..sort((a, b) => b.value.compareTo(a.value));
+  ///
+  ///     return ListView.builder(
+  ///       itemCount: sortedFolders.length,
+  ///       itemBuilder: (context, index) {
+  ///         final folder = sortedFolders[index];
+  ///         final folderName = folder.key.split('/').last;
+  ///
+  ///         return ListTile(
+  ///           leading: Icon(Icons.folder),
+  ///           title: Text(folderName),
+  ///           subtitle: Text('${folder.value} videos'),
+  ///           onTap: () {
+  ///             // Navigate to folder contents
+  ///             Navigator.push(
+  ///               context,
+  ///               MaterialPageRoute(
+  ///                 builder: (context) => VideoFolderContents(folderPath: folder.key),
+  ///               ),
+  ///             );
+  ///           },
+  ///         );
+  ///       },
+  ///     );
+  ///   }
+  /// }
+  /// ```
+  Future<Map<String, int>> getVideoFolders() {
+    return DeviceMediaFinderPlatform.instance.getVideoFolders();
+  }
+
+  /// Get videos from a specific folder
+  ///
+  /// [folderPath] is the path of the folder to get videos from
+  ///
+  /// Returns a list of [VideoFile] objects from the specified folder.
+  ///
+  /// Example 1: Get videos from a specific folder
+  /// ```dart
+  /// final deviceMediaFinder = DeviceMediaFinder();
+  /// final folderPath = '/storage/emulated/0/DCIM/Camera';
+  /// final videos = await deviceMediaFinder.getVideosFromFolder(folderPath);
+  ///
+  /// print('Found ${videos.length} videos in $folderPath');
+  /// for (final video in videos) {
+  ///   print('Video: ${video.name}, Size: ${(video.size / (1024 * 1024)).toStringAsFixed(2)} MB');
+  /// }
+  /// ```
+  ///
+  /// Example 2: Display videos from a folder with thumbnails
+  /// ```dart
+  /// class VideoFolderContents extends StatefulWidget {
+  ///   final String folderPath;
+  ///
+  ///   VideoFolderContents({required this.folderPath});
+  ///
+  ///   @override
+  ///   _VideoFolderContentsState createState() => _VideoFolderContentsState();
+  /// }
+  ///
+  /// class _VideoFolderContentsState extends State<VideoFolderContents> {
+  ///   final deviceMediaFinder = DeviceMediaFinder();
+  ///   List<VideoFile> videos = [];
+  ///   bool isLoading = true;
+  ///
+  ///   @override
+  ///   void initState() {
+  ///     super.initState();
+  ///     _loadVideos();
+  ///   }
+  ///
+  ///   Future<void> _loadVideos() async {
+  ///     setState(() {
+  ///       isLoading = true;
+  ///     });
+  ///
+  ///     try {
+  ///       // Get videos from the folder
+  ///       final folderVideos = await deviceMediaFinder.getVideosFromFolder(widget.folderPath);
+  ///
+  ///       // Generate thumbnails for the videos
+  ///       final videosWithThumbnails = await deviceMediaFinder.generateThumbnailsForVideos(
+  ///         folderVideos,
+  ///         width: 192,
+  ///         height: 108,
+  ///       );
+  ///
+  ///       setState(() {
+  ///         videos = videosWithThumbnails;
+  ///         isLoading = false;
+  ///       });
+  ///     } catch (e) {
+  ///       print('Error loading videos: $e');
+  ///       setState(() {
+  ///         isLoading = false;
+  ///       });
+  ///     }
+  ///   }
+  ///
+  ///   @override
+  ///   Widget build(BuildContext context) {
+  ///     final folderName = widget.folderPath.split('/').last;
+  ///
+  ///     return Scaffold(
+  ///       appBar: AppBar(
+  ///         title: Text(folderName),
+  ///       ),
+  ///       body: isLoading
+  ///         ? Center(child: CircularProgressIndicator())
+  ///         : videos.isEmpty
+  ///           ? Center(child: Text('No videos in this folder'))
+  ///           : GridView.builder(
+  ///               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+  ///                 crossAxisCount: 2,
+  ///                 childAspectRatio: 16 / 9,
+  ///                 crossAxisSpacing: 8,
+  ///                 mainAxisSpacing: 8,
+  ///               ),
+  ///               itemCount: videos.length,
+  ///               itemBuilder: (context, index) {
+  ///                 final video = videos[index];
+  ///                 return GestureDetector(
+  ///                   onTap: () {
+  ///                     // Play the video using the video path
+  ///                     print('Play video: ${video.path}');
+  ///                   },
+  ///                   child: Stack(
+  ///                     fit: StackFit.expand,
+  ///                     children: [
+  ///                       // Thumbnail
+  ///                       video.thumbnailData != null
+  ///                         ? Image.memory(
+  ///                             video.thumbnailData!,
+  ///                             fit: BoxFit.cover,
+  ///                           )
+  ///                         : Container(
+  ///                             color: Colors.grey.shade300,
+  ///                             child: Icon(Icons.video_file, size: 48),
+  ///                           ),
+  ///
+  ///                       // Video name overlay
+  ///                       Positioned(
+  ///                         bottom: 0,
+  ///                         left: 0,
+  ///                         right: 0,
+  ///                         child: Container(
+  ///                           color: Colors.black.withOpacity(0.5),
+  ///                           padding: EdgeInsets.all(4),
+  ///                           child: Text(
+  ///                             video.name,
+  ///                             style: TextStyle(color: Colors.white),
+  ///                             maxLines: 1,
+  ///                             overflow: TextOverflow.ellipsis,
+  ///                           ),
+  ///                         ),
+  ///                       ),
+  ///
+  ///                       // Play icon
+  ///                       Center(
+  ///                         child: Icon(
+  ///                           Icons.play_circle_outline,
+  ///                           color: Colors.white.withOpacity(0.7),
+  ///                           size: 48,
+  ///                         ),
+  ///                       ),
+  ///                     ],
+  ///                   ),
+  ///                 );
+  ///               },
+  ///             ),
+  ///     );
+  ///   }
+  /// }
+  /// ```
+  Future<List<VideoFile>> getVideosFromFolder(String folderPath) async {
+    final allVideos = await getVideos();
+    return allVideos.where((video) => video.folderPath == folderPath).toList();
   }
 }

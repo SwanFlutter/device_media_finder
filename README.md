@@ -16,7 +16,7 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  device_media_finder: ^0.0.1
+  device_media_finder: ^0.0.2
 ```
 
 ## Usage

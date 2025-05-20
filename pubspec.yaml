@@ -1,6 +1,6 @@
 name: device_media_finder
 description: "A Flutter plugin for accessing media files (videos and audio) on the device with support for various formats and thumbnails."
-version: 0.0.1
+version: 0.0.2
 homepage: "https://github.com/SwanFlutter/device_media_finder"
 
 environment:
