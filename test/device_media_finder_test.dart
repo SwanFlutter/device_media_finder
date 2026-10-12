@@ -13,8 +13,7 @@ class MockDeviceMediaFinderPlatform extends DeviceMediaFinderPlatform
   Future<int> getMediaCount({
     required MediaType type,
     List<String> extensions = const [],
-  }) =>
-      Future.value(3);
+  }) => Future.value(3);
 
   @override
   Future<List<MediaItem>> getMediaPage({
@@ -22,22 +21,21 @@ class MockDeviceMediaFinderPlatform extends DeviceMediaFinderPlatform
     required int page,
     required int pageSize,
     List<String> extensions = const [],
-  }) =>
-      Future.value([
-        MediaItem.fromMap({
-          'id': 1,
-          'uri': 'content://media/external/video/media/1',
-          'name': 'clip.mp4',
-          'size': 1024,
-          'dateModified': 1700000000000,
-          'mimeType': 'video/mp4',
-          'mediaType': 3,
-          'path': '/storage/emulated/0/Movies/clip.mp4',
-          'width': 1920,
-          'height': 1080,
-          'duration': 42000,
-        }),
-      ]);
+  }) => Future.value([
+    MediaItem.fromMap({
+      'id': 1,
+      'uri': 'content://media/external/video/media/1',
+      'name': 'clip.mp4',
+      'size': 1024,
+      'dateModified': 1700000000000,
+      'mimeType': 'video/mp4',
+      'mediaType': 3,
+      'path': '/storage/emulated/0/Movies/clip.mp4',
+      'width': 1920,
+      'height': 1080,
+      'duration': 42000,
+    }),
+  ]);
 }
 
 void main() {

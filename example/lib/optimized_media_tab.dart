@@ -88,9 +88,8 @@ class _OptimizedMediaTabState extends State<OptimizedMediaTab>
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Error: $e')));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Error: $e')));
       }
     } finally {
       if (mounted) setState(() => _loading = false);
@@ -135,9 +134,8 @@ class _OptimizedMediaTabState extends State<OptimizedMediaTab>
             const SizedBox(height: 12),
             Text(
               'No $_title found',
-              style: Theme.of(
-                context,
-              ).textTheme.titleMedium?.copyWith(color: Colors.grey),
+              style: Theme.of(context).textTheme.titleMedium
+                  ?.copyWith(color: Colors.grey),
             ),
             TextButton.icon(
               onPressed: _refresh,
@@ -802,9 +800,8 @@ class _Header extends StatelessWidget {
               children: [
                 Text(
                   '$title ($total)',
-                  style: Theme.of(
-                    context,
-                  ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+                  style: Theme.of(context).textTheme.titleSmall
+                      ?.copyWith(fontWeight: FontWeight.bold),
                 ),
                 if (shown < total)
                   Text(

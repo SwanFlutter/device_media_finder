@@ -68,7 +68,9 @@ abstract class DeviceMediaFinderPlatform extends PlatformInterface {
   }
 
   Future<bool> hasStoragePermission() {
-    throw UnimplementedError('hasStoragePermission() has not been implemented.');
+    throw UnimplementedError(
+      'hasStoragePermission() has not been implemented.',
+    );
   }
 
   Future<bool> requestStoragePermission() {
@@ -98,6 +100,8 @@ abstract class DeviceMediaFinderPlatform extends PlatformInterface {
     int page = 0,
     int pageSize = 200,
   }) {
-    throw UnimplementedError('getDirectoryContents() has not been implemented.');
+    throw UnimplementedError(
+      'getDirectoryContents() has not been implemented.',
+    );
   }
 }

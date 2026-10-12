@@ -35,12 +35,15 @@ class MethodChannelDeviceMediaFinder extends DeviceMediaFinderPlatform {
     required int pageSize,
     List<String> extensions = const [],
   }) async {
-    final raw = await methodChannel.invokeMethod<List<dynamic>>('getMediaPage', {
-      'type': type.name,
-      'extensions': extensions,
-      'page': page,
-      'pageSize': pageSize,
-    });
+    final raw = await methodChannel.invokeMethod<List<dynamic>>(
+      'getMediaPage',
+      {
+        'type': type.name,
+        'extensions': extensions,
+        'page': page,
+        'pageSize': pageSize,
+      },
+    );
     if (raw == null) return const [];
     return raw
         .whereType<Map<dynamic, dynamic>>()
@@ -79,8 +82,9 @@ class MethodChannelDeviceMediaFinder extends DeviceMediaFinderPlatform {
 
   @override
   Future<bool> requestStoragePermission() async {
-    final ok =
-        await methodChannel.invokeMethod<bool>('requestStoragePermission');
+    final ok = await methodChannel.invokeMethod<bool>(
+      'requestStoragePermission',
+    );
     return ok ?? false;
   }
 
@@ -92,19 +96,24 @@ class MethodChannelDeviceMediaFinder extends DeviceMediaFinderPlatform {
 
   @override
   Future<bool> openAllFilesAccessSettings() async {
-    final ok =
-        await methodChannel.invokeMethod<bool>('openAllFilesAccessSettings');
+    final ok = await methodChannel.invokeMethod<bool>(
+      'openAllFilesAccessSettings',
+    );
     return ok ?? false;
   }
 
   @override
   Future<List<Map<String, String>>> getDirectories() async {
-    final raw =
-        await methodChannel.invokeMethod<List<dynamic>>('getDirectories');
+    final raw = await methodChannel.invokeMethod<List<dynamic>>(
+      'getDirectories',
+    );
     if (raw == null) return const [];
-    return raw.whereType<Map<dynamic, dynamic>>().map((m) {
-      return m.map((k, v) => MapEntry('$k', '$v'));
-    }).toList(growable: false);
+    return raw
+        .whereType<Map<dynamic, dynamic>>()
+        .map((m) {
+          return m.map((k, v) => MapEntry('$k', '$v'));
+        })
+        .toList(growable: false);
   }
 
   @override
@@ -113,15 +122,16 @@ class MethodChannelDeviceMediaFinder extends DeviceMediaFinderPlatform {
     int page = 0,
     int pageSize = 200,
   }) async {
-    final raw = await methodChannel
-        .invokeMethod<List<dynamic>>('getDirectoryContents', {
-      'path': path,
-      'page': page,
-      'pageSize': pageSize,
-    });
+    final raw = await methodChannel.invokeMethod<List<dynamic>>(
+      'getDirectoryContents',
+      {'path': path, 'page': page, 'pageSize': pageSize},
+    );
     if (raw == null) return const [];
-    return raw.whereType<Map<dynamic, dynamic>>().map((m) {
-      return m.map((k, v) => MapEntry('$k', v));
-    }).toList(growable: false);
+    return raw
+        .whereType<Map<dynamic, dynamic>>()
+        .map((m) {
+          return m.map((k, v) => MapEntry('$k', v));
+        })
+        .toList(growable: false);
   }
 }

@@ -58,7 +58,7 @@ Add the dependency to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  device_media_finder: ^0.1.0
+  device_media_finder: ^0.2.0
 ```
 
 Then:
